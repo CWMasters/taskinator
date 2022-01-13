@@ -46,9 +46,7 @@ var taskFormHandler = function(event) {
 };
 
 var createTaskEl = function(taskDataObj) {
-    console.log(taskDataObj);
-    console.log(taskDataObj.status);
-
+    
      // create list item
      var listItemEl = document.createElement("li");
      listItemEl.className = "task-item";
@@ -70,9 +68,13 @@ var createTaskEl = function(taskDataObj) {
      // add entire list item ot the list
      tasksToDoEl.appendChild(listItemEl);
      
+     // save task as an object with name, type, status and id properties then push it into tasks array
      taskDataObj.id = taskIdCounter;
 
      tasks.push(taskDataObj);
+     
+     // save tasks to local storage
+     saveTasks();
 
      // increse task counter for next unique id
      taskIdCounter++;
@@ -142,8 +144,12 @@ var createTaskEl = function(taskDataObj) {
 
          alert("Task Updated!");
 
+         // remove datat attribute from form
          formEl.removeAttribute("data-task-id");
+         // update fromEl button to go back to saying "Add task" instead of "edit task"
          formEl.querySelector("#save-task").textContent = "Add Task";
+         // save tasks to local storage
+         saveTasks();
      };
 
      
@@ -167,7 +173,6 @@ var createTaskEl = function(taskDataObj) {
         };
 
         var taskStatusChangeHandler = function(event) {
-            console.log(event.target.value)
 
             // get the task item's id
             var taskId = event.target.getAttribute("data-task-id");
@@ -194,6 +199,8 @@ var createTaskEl = function(taskDataObj) {
                     console.log(tasks);
                 }
             }
+            // save to local storage
+            saveTasks();
         };
 
 
@@ -240,9 +247,13 @@ var createTaskEl = function(taskDataObj) {
            }
              // reassign tasks array to be the same as updatedTaskArr
              tasks = updatedTaskArr;
+             // save tasks to local storage
+             saveTasks();
         };
 
-     
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}    
   
 // create a new task     
 formEl.addEventListener("submit", taskFormHandler);
